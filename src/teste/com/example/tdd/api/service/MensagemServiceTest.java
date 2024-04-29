@@ -5,6 +5,7 @@ import com.example.tdd.api.model.Mensagem;
 import com.example.tdd.api.repository.MensagemRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -34,58 +35,66 @@ public class MensagemServiceTest {
     void tearDown() throws Exception {
         mock.close();
     }
-    @Test
-    void devePermitirResgistrarMensagem(){
-        fail("teste não implementado");
-    }
-    @Test
-    void devePermitirBuscarMensagem(){
-        fail("teste não implementado");
-    }
-    @Test
-    void deveLancarErroQdoIdMsgNaoforValidoParaBuscarMsg(){
-        var id = UUID.randomUUID();
-        when(repository.findById(id))
-                .thenReturn(Optional.empty());
+    @Nested
+    class ServiceMessagem {
+        @Test
+        void devePermitirResgistrarMensagem() {
+            fail("teste não implementado");
+        }
 
-        assertThatThrownBy(()-> service.buscarMensagem(id))
-                .isInstanceOf(MensagemNotFoundException.class)
-                .hasMessage("Mensagem não encontrada");
-        verify(repository, times(1)).findById(id);
-    }
-    @Test
-    void devePermitirAlterarMensagem(){
+        @Test
+        void devePermitirBuscarMensagem() {
+            fail("teste não implementado");
+        }
 
-        var id = UUID.fromString("b2548bd8-20ec-480d-963f-76ce31dd680e");
-        var msgMock = criaMensagem();
+        @Test
+        void deveLancarErroQdoIdMsgNaoforValidoParaBuscarMsg() {
+            var id = UUID.randomUUID();
+            when(repository.findById(id))
+                    .thenReturn(Optional.empty());
 
-        when(repository.findById(id)).thenReturn(Optional.of(msgMock));
-        when(repository.save(msgMock)).thenReturn(msgMock);
+            assertThatThrownBy(() -> service.buscarMensagem(id))
+                    .isInstanceOf(MensagemNotFoundException.class)
+                    .hasMessage("Mensagem não encontrada");
+            verify(repository, times(1)).findById(id);
+        }
 
-        Optional<Mensagem> mensagem1 = repository.findById(id);
+        @Test
+        void devePermitirAlterarMensagem() {
 
-        mensagem1.ifPresent(msg->{
-            assertThat(msg.getConteudo()).isEqualTo("Te amo filho");
-            msg.setConteudo("teste");
-            repository.save(msg);
-        });
+            var id = UUID.fromString("b2548bd8-20ec-480d-963f-76ce31dd680e");
+            var msgMock = criaMensagem();
 
-        var mensagem2 = repository.findById(id);
+            when(repository.findById(id)).thenReturn(Optional.of(msgMock));
+            when(repository.save(msgMock)).thenReturn(msgMock);
 
-        mensagem2.ifPresent(msgRec->{
-            assertThat(msgRec.getConteudo()).isEqualTo("teste");
-        });
-        verify(repository, times(1)).findById(id);
-        verify(repository, times(1)).save(msgMock);
+            Optional<Mensagem> mensagem1 = repository.findById(id);
 
-    }
-    @Test
-    void devePermitirRemoverMensagem(){
-        fail("teste não implementado");
-    }
-    @Test
-    void devePermitirListarMensagens(){
-        fail("teste não implementado");
+            mensagem1.ifPresent(msg -> {
+                assertThat(msg.getConteudo()).isEqualTo("Te amo filho");
+                msg.setConteudo("teste");
+                repository.save(msg);
+            });
+
+            var mensagem2 = repository.findById(id);
+
+            mensagem2.ifPresent(msgRec -> {
+                assertThat(msgRec.getConteudo()).isEqualTo("teste");
+            });
+            verify(repository, times(1)).findById(id);
+            verify(repository, times(1)).save(msgMock);
+
+        }
+
+        @Test
+        void devePermitirRemoverMensagem() {
+            fail("teste não implementado");
+        }
+
+        @Test
+        void devePermitirListarMensagens() {
+            fail("teste não implementado");
+        }
     }
     private Mensagem criaMensagem(){
         return Mensagem.builder()

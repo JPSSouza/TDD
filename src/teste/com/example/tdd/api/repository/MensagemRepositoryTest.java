@@ -7,6 +7,7 @@ import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.AfterEach;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -38,72 +39,75 @@ public class MensagemRepositoryTest {
         openMocks.close();
     }
 
-    @Test
-    void devePermitirRegistrarMensagem(){
-        var mensagem = criaMensagem();
+    @Nested
+    class RepositoryMessagem {
+        @Test
+        void devePermitirRegistrarMensagem() {
+            var mensagem = criaMensagem();
 
-        Mockito.when(mensagemRepository.save(ArgumentMatchers.any(Mensagem.class))).thenReturn(mensagem);
+            Mockito.when(mensagemRepository.save(ArgumentMatchers.any(Mensagem.class))).thenReturn(mensagem);
 
-        var mensagemRecebida = mensagemRepository.save(mensagem);
+            var mensagemRecebida = mensagemRepository.save(mensagem);
 
-        AssertionsForClassTypes.assertThat(mensagemRecebida)
-                .isNotNull()
-                .isEqualTo(mensagem);
+            AssertionsForClassTypes.assertThat(mensagemRecebida)
+                    .isNotNull()
+                    .isEqualTo(mensagem);
 
-        Mockito.verify(mensagemRepository, Mockito.times(1)).save(mensagem);
-    }
+            Mockito.verify(mensagemRepository, Mockito.times(1)).save(mensagem);
+        }
 
-    @Test
-    void devePermitirConsultarMensagem (){
+        @Test
+        void devePermitirConsultarMensagem() {
 
-        var id = UUID.randomUUID();
-        var msg = criaMensagem();
+            var id = UUID.randomUUID();
+            var msg = criaMensagem();
 
-        msg.setId(id);
+            msg.setId(id);
 
-        Mockito.when(mensagemRepository.findById(ArgumentMatchers.any(UUID.class))).thenReturn(Optional.of(msg));
+            Mockito.when(mensagemRepository.findById(ArgumentMatchers.any(UUID.class))).thenReturn(Optional.of(msg));
 
-        var msgRecebida = mensagemRepository.findById(id);
+            var msgRecebida = mensagemRepository.findById(id);
 
-        AssertionsForClassTypes.assertThat(msgRecebida)
-                .isPresent()
-                .containsSame(msg);
-        msgRecebida.ifPresent(msgRec -> {
-            AssertionsForInterfaceTypes.assertThat(msgRec.getId()).isEqualTo(msg.getId());
-            AssertionsForClassTypes.assertThat(msgRec.getConteudo()).isEqualTo(msg.getConteudo());
-        });
-        Mockito.verify(mensagemRepository, Mockito.times(1)).findById(ArgumentMatchers.any(UUID.class));
+            AssertionsForClassTypes.assertThat(msgRecebida)
+                    .isPresent()
+                    .containsSame(msg);
+            msgRecebida.ifPresent(msgRec -> {
+                AssertionsForInterfaceTypes.assertThat(msgRec.getId()).isEqualTo(msg.getId());
+                AssertionsForClassTypes.assertThat(msgRec.getConteudo()).isEqualTo(msg.getConteudo());
+            });
+            Mockito.verify(mensagemRepository, Mockito.times(1)).findById(ArgumentMatchers.any(UUID.class));
 
-    }
+        }
 
-    @Test
-    void deveRemoverMensagem(){
-        var id = UUID.randomUUID();
-        Mockito.doNothing().when(mensagemRepository).deleteById(ArgumentMatchers.any(UUID.class));
-        mensagemRepository.deleteById(id);
+        @Test
+        void deveRemoverMensagem() {
+            var id = UUID.randomUUID();
+            Mockito.doNothing().when(mensagemRepository).deleteById(ArgumentMatchers.any(UUID.class));
+            mensagemRepository.deleteById(id);
 
-        Mockito.verify(mensagemRepository, Mockito.times(1)).deleteById(ArgumentMatchers.any(UUID.class));
-    }
+            Mockito.verify(mensagemRepository, Mockito.times(1)).deleteById(ArgumentMatchers.any(UUID.class));
+        }
 
-    @Test
-    void devePermitirListarMensagens(){
-        var msg1 = criaMensagem();
-        var msg2 = criaMensagem();
-        var listaMsg = Arrays.asList(
-                msg1,
-                msg2);
+        @Test
+        void devePermitirListarMensagens() {
+            var msg1 = criaMensagem();
+            var msg2 = criaMensagem();
+            var listaMsg = Arrays.asList(
+                    msg1,
+                    msg2);
 
-        Mockito.when(mensagemRepository.findAll()).thenReturn(listaMsg);
+            Mockito.when(mensagemRepository.findAll()).thenReturn(listaMsg);
 
-        var msgRecebida = mensagemRepository.findAll();
+            var msgRecebida = mensagemRepository.findAll();
 
-        AssertionsForInterfaceTypes.assertThat(msgRecebida)
-                .hasSize(2)
-                .containsExactlyInAnyOrder(msg1, msg2);
+            AssertionsForInterfaceTypes.assertThat(msgRecebida)
+                    .hasSize(2)
+                    .containsExactlyInAnyOrder(msg1, msg2);
 
-        Mockito.verify(mensagemRepository, Mockito.times(1)).findAll();
+            Mockito.verify(mensagemRepository, Mockito.times(1)).findAll();
 
 
+        }
     }
 
     private Mensagem criaMensagem(){

@@ -11,6 +11,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class MensagemServiceImpl implements MensagemService{
+
     @Autowired
     private final MensagemRepository repository;
     @Override
